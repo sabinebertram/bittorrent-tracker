@@ -45,6 +45,8 @@ class Client extends EventEmitter {
     this._infoHashBuffer = Buffer.from(this.infoHash, 'hex')
     this._infoHashBinary = this._infoHashBuffer.toString('binary')
 
+    this._license = opts.license
+
     debug('new client %s', this.infoHash)
 
     this.destroyed = false
