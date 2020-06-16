@@ -343,11 +343,14 @@ class Server extends EventEmitter {
     else cb(null)
   }
 
-  createSwarm (infoHash, cb) {
+  createSwarm (infoHash, license, cb) {
+    if (license === undefined) {
+      return cb(new Error('license not provided'), null)
+    }
     if (Buffer.isBuffer(infoHash)) infoHash = infoHash.toString('hex')
 
     process.nextTick(() => {
-      const swarm = this.torrents[infoHash] = new Server.Swarm(infoHash, this)
+      const swarm = this.torrents[infoHash] = new Server.Swarm(infoHash, license, this)
       cb(null, swarm)
     })
   }
@@ -654,7 +657,7 @@ class Server extends EventEmitter {
       self.getSwarm(params.info_hash, (err, swarm) => {
         if (err) return cb(err)
         if (swarm) return cb(null, swarm)
-        self.createSwarm(params.info_hash, (err, swarm) => {
+        self.createSwarm(params.info_hash, params.license, (err, swarm) => {
           if (err) return cb(err)
           cb(null, swarm)
         })
